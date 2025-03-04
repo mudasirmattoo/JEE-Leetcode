@@ -1,0 +1,51 @@
+# General ignores
+.DS_Store
+node_modules/
+dist/
+build/
+.env
+.env.local
+.env.production
+.env.development
+.vscode/
+.idea/
+*.log
+npm-debug.log*
+yarn-error.log
+package-lock.json
+
+# Go-specific ignores
+/go/bin/
+/go/pkg/
+/go/src/
+/go.sum
+*.exe
+*.out
+*.test
+
+# Python-related (if you use Python anywhere)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django-related (if needed)
+db.sqlite3
+migrations/
+*.sqlite3
+
+# Frontend (React)
+frontend/node_modules/
+frontend/.next/
+frontend/.cache/
+frontend/build/
+
+# Backend (Go)
+backend/tmp/
+backend/*.log
+backend/vendor/
+backend/go.sum
+backend/go.mod
+
+# Logs & Debug Files
+*.log
