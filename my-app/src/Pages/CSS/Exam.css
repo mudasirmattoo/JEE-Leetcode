@@ -1,0 +1,140 @@
+.Exam {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 160px auto;
+  padding: 30px 70px; /* Increase horizontal padding */
+  max-width: 100%;  
+  background-color: #f8f9fa;
+  font-family: 'Quicksand', sans-serif;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  gap: 20px;
+}
+
+.Exam h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.Exam ul {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0; /* Remove padding */
+  width: 30%;
+  font-family: 'Quicksand', sans-serif;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+}
+
+
+.Exam  li {
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s, border-color 0.3s;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.Exam li:hover {
+  background-color: #f0f8ff; /* Highlight on hover */
+  border-color:#830202;
+}
+
+.Exam ul li.active {
+  background-color: #618263; /* Green for the selected option */
+  color: white; /* White text for contrast */
+}
+
+.Buttons {
+  display: flex; /* Enable flexbox */
+  gap: 10px; /* Add space between buttons */
+}
+
+button {
+  padding: 10px 20px; /* Adjust the size of the buttons */
+  background-color: #830202; /* Button color */
+  color: white; /* Text color */
+  border: none; /* Remove border */
+   /* Round corners */
+  cursor: pointer; /* Change cursor to pointer */
+  transition: background-color 0.3s; /* Smooth background color transition */
+}
+
+button:hover {
+  background-color: #830202; /* Darker shade of the button color on hover */
+}
+
+button:disabled {
+  background-color: #ccc; /* Light gray for disabled state */
+  cursor: not-allowed; /* Indicate the button is not clickable */
+}
+
+.question-info {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.Exam-complete {
+  margin :360px 500px;
+  text-align: center;
+  padding: 40px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: 'Quicksand', sans-serif;
+}
+
+.Exam-complete h2 {
+  font-size: 24px;
+  color: #333;
+}
+
+.Exam-complete p {
+  font-size: 18px;
+  color: #555;
+  font-family: 'Quicksand', sans-serif;
+}
+
+
+/* Centering and Animation for the Selected Exam */
+.selected-Exam {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+position: absolute; /* Use absolute positioning to center it */
+top: 50%; /* Center vertically */
+left: 50%; /* Center horizontally */
+transform: translate(-50%, -50%); /* Adjust for perfect centering */
+opacity: 0; /* Initial opacity for animation */
+animation: slideUp 1s ease-out forwards; /* Apply slide-up animation */
+width: 80%; /* Set width for responsiveness */
+max-width: 900px; /* Optional: Set max-width for larger screens */
+}
+
+/* Keyframes for Slide-up Animation */
+@keyframes slideUp {
+0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(30px); /* Start with slight downwards */
+}
+100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0); /* End at centered position */
+}
+}
+
+.timer {
+  font-size: 1.3rem;
+  color:#830202;
+  margin: 20px 0;
+  font-family: 'Quicksand', sans-serif;
+}

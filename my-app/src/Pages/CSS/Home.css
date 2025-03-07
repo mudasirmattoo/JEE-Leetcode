@@ -1,0 +1,22 @@
+.practice-message{
+  font-family: "Quicksand";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 40px auto; 
+}
+
+.chemistry-quiz-msg{
+  font-family: "Quicksand";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 180px; 
+}
+
+/* Adjust Questions section if needed */
+.Questions {
+  width: 100%;
+  max-width: 800px; /* Adjust as needed */
+  margin-top: 20px;
+}

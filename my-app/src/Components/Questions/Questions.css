@@ -1,0 +1,129 @@
+/* Filter Header */
+.filter-header {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Space between each filter group */
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Filter Group (Heading and Select) */
+.filter-group {
+    display: flex;
+    flex-direction: column; /* Stack heading and select vertically */
+    align-items: center; /* Center-align both heading and select */
+    gap: 5px; /* Space between heading and select */
+}
+
+/* Filter Select Styling */
+.filter-select {
+    padding: 8px;
+    font-size: 1rem;
+    font-family: "Quicksand";
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border 0.2s, box-shadow 0.2s;
+    width: 150px; /* Set a consistent width */
+}
+
+.filter-select:focus {
+    outline: none;
+    border: 1px solid #007bff;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+}
+
+/* Filter Heading Styling */
+.diff, .topics {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #555;
+    margin: 0; /* Remove default margin */
+}
+
+/* Questions Section Styling */
+.questions-section {
+    width: 70%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    font-family: "Quicksand";
+    text-align: center;
+}
+
+/* Section Heading */
+.questions-section h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* List Styling */
+.questions-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Individual Question Item */
+.question-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 8px;
+}
+
+.question-info p {
+    margin: 0;
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Difficulty Levels */
+.difficulty {
+    font-family: "Quicksand";
+}
+
+.difficulty.easy {
+    color: #28a745; /* Green for easy */
+}
+
+.difficulty.medium {
+    color: #ffc107; /* Yellow for medium */
+}
+
+.difficulty.hard {
+    color: #dc3545; /* Red for hard */
+}
+
+/* Link Styling */
+.question-link {
+    text-decoration: none;
+    color: #830202;
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+
+.question-link:hover {
+    color: black;
+}
+
+.load-more{
+    background-color: white;
+    color: #830202;
+    font-size: small;
+    background-color: #f8f9fa;
+}
+.load-more:hover{
+    background-color: white;
+    color: #830202;
+    font-size: small;
+    background-color:#f8f9fa;
+}

@@ -2,26 +2,36 @@ package routes
 
 import (
 	"backend/auth"
-	"net/http"
+	"backend/profile"
+	"backend/questions"
+
+	"github.com/gorilla/mux"
 )
 
-func RegisterRoutes() {
+func RegisterRoutes(router *mux.Router) {
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/" {
-			http.NotFound(w, r)
-			return
-		}
-		auth.RenderTemplate(w, "index", map[string]string{"Title": "Home"})
-	})
+	// router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	if r.URL.Path != "/" {
+	// 		http.NotFound(w, r)
+	// 		return
+	// 	}
+	// 	auth.RenderTemplate(w, "index", map[string]string{"Title": "Home"})
+	// })
 
-	http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
-		auth.RenderTemplate(w, "register", map[string]string{"Title": "Register"})
-	})
+	// router.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
+	// 	auth.RenderTemplate(w, "register", map[string]string{"Title": "Register"})
+	// }).Methods("POST")
 
-	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
-		auth.RenderTemplate(w, "login", map[string]string{"Title": "Login"})
-	})
+	// router.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+	// 	auth.RenderTemplate(w, "login", map[string]string{"Title": "Login"})
+	// }).Methods("POST", "GET")
 
-	http.HandleFunc("/logout", auth.LogoutHandler)
+	router.HandleFunc("/logout", auth.LogoutHandler)
+
+	router.HandleFunc("/register-user", auth.RegisterHandler)
+	router.HandleFunc("/login-user", auth.LoginHandler)
+
+	router.HandleFunc("/add-question", questions.QuestionFormHandler)
+
+	router.HandleFunc("/profile", profile.ProfileHandler)
 }

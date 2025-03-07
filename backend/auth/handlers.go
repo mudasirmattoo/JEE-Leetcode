@@ -5,8 +5,6 @@ import (
 	"backend/models"
 	"encoding/json"
 	"errors"
-	"html/template"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -156,59 +154,4 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		"success": true,
 		"message": "you have been logged out",
 	})
-}
-
-var templates map[string]*template.Template
-
-func CreateTemplateCache() (map[string]*template.Template, error) {
-	cache := map[string]*template.Template{}
-
-	pages := []string{
-		"index.html",
-		"register.html",
-		"login.html",
-		"dashboard.html",
-	}
-
-	baseTemplates := []string{
-		"frontend/templates/base.html",
-		"frontend/templates/header.html",
-		"frontend/templates/footer.html",
-	}
-
-	for _, page := range pages {
-		name := page
-		ts, err := template.New(name).ParseFiles(append(baseTemplates, "frontend/templates/"+name)...)
-
-		if err != nil {
-			return nil, err
-		}
-
-		cache[name] = ts
-	}
-	return cache, nil
-
-}
-
-func init() {
-	var err error
-	templates, err = CreateTemplateCache()
-	if err != nil {
-		log.Fatal("Cannot create template cache:", err)
-	}
-}
-
-func RenderTemplate(w http.ResponseWriter, templ string, data interface{}) {
-	t, ok := templates[templ+".html"]
-	if !ok {
-		http.Error(w, "Template not found", http.StatusInternalServerError)
-		log.Println("Template not found:", templ)
-		return
-	}
-
-	err := t.Execute(w, data)
-	if err != nil {
-		http.Error(w, "Template error", http.StatusInternalServerError)
-		log.Println("Template error:", err)
-	}
 }

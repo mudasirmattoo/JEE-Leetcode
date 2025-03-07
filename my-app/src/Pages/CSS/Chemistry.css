@@ -1,0 +1,41 @@
+/* Welcome message styles */
+.Welcome-message {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    font-family: "Quicksand";
+    margin: 170px auto;
+}
+.chemistry-test-msg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Quicksand";
+    margin-top: 185px;
+}
+
+
+/* Syllabus message styling */
+.syllabus-msg {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    font-family: "Quicksand";
+    margin-top: 140px;
+}
+.exam-msg{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+   
+    font-family: "Quicksand";
+    margin-top: 180px;
+}

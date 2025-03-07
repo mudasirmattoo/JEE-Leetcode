@@ -16,4 +16,6 @@ type Question struct {
 	Options        datatypes.JSON `gorm:"type:json"`
 	CorrectAnswers datatypes.JSON `gorm:"type:json"`
 	Explanation    string         `gorm:"type:text"`
+	Solved         bool           `gorm:"not null"`
+	ImagePath      *string        `gorm:"type:text;default:null"`
 }
