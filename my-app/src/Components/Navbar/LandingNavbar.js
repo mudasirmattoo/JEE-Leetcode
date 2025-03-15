@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Navbar.css"
+import "./LandingNavbar.css"
 import { Link } from "react-router-dom";
 
 
@@ -10,7 +10,7 @@ const Navbar = () => {
       <ul className="Links">
         {/* Home Button */}
         <li className="Home" onClick={() => setLine("Home")}>
-          <Link to="/" className="link">Tango</Link>
+          <Link to="/" className="link">Home</Link>
           {line === "Home" && <hr />}
         </li>
 

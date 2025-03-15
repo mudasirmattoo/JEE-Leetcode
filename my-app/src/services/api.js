@@ -23,4 +23,24 @@ export const getRandomQuestionsByTopic = async (topic, count) => {
     console.error('Error fetching random questions:', error);
     throw error;
   }
+};
+
+export const getUserProfile = async () => {
+  try {
+    // Check if user is authenticated
+    const token = localStorage.getItem('token');
+    if (!token) {
+      return { data: null };
+    }
+
+    const response = await axios.get(`${API_URL}/user/profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    return { data: null }; // Return null data instead of throwing error
+  }
 }; 

@@ -1,8 +1,18 @@
 import React from 'react';
 import './ProfileDashboard.css'; // Make sure this CSS file exists and is customized as needed
 import SolvedQuestions from '../SolvedQuestions/SolvedQuestions.js';
-
+import { useUser } from "../../context/UserContext.js";
 const ProfileDashboard = ({ onLogout }) => {
+  const { userProfile, loading, error } = useUser();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   // Hard-coded value for total questions solved
   const totalSolved = 112; 
 
@@ -27,9 +37,10 @@ const ProfileDashboard = ({ onLogout }) => {
           <div className="profile-info">
             <img src="../Assets/Screenshot 2025-02-05 at 11.14.48 AM.png" alt="Profile" className="profile-pic" />
             <div>
-              <h3>Moomin Naik</h3>
-              <p>Rank: 988,808</p>
-              
+              <h3>{userProfile.name}</h3>
+              <p>Rank: {userProfile.rank}</p>
+              <p>Email: {userProfile.email}</p>
+              <p>Role: {userProfile.role}</p>
             </div>
           </div>
           

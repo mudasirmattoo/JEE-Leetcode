@@ -13,9 +13,7 @@ const initialValues = {
 
 const onSubmit = async (values) => {
     try {
-        const response = await axios.post('http://localhost:9080/register-user', values,{
-            withCredentials: true
-        });
+        const response = await axios.post('http://localhost:5000/submit', values);
         console.log('Response from server:', response.data);
     } catch (error) {
         console.error('Error submitting form:', error);
@@ -25,73 +23,93 @@ const onSubmit = async (values) => {
 const validate = (values) => {
     let errors = {};
 
-    if (!values.name) errors.name = "Required";
-    if (!values.email) errors.email = "Required";
-    if (!values.institute) errors.institute = "Required";
-
+    if (!values.name) {
+        errors.name = "Required";
+    }
+    if (!values.email) {
+        errors.email = "Required";
+    }
+    if (!values.institute) {
+        errors.institute = "Required";
+    }
     if (!values.password) {
         errors.password = "Required";
-    } else if (values.password.length < 6) {
-        errors.password = "Password must be at least 6 characters";
     }
-
     if (!values.confirmPassword) {
         errors.confirmPassword = "Required";
-    } else if (values.confirmPassword !== values.password) {
-        errors.confirmPassword = "Passwords must match";
     }
-
     return errors;
 };
 
-
 const Signup = () => {
-    const [message, setMessage] = React.useState("");
-
     const formik = useFormik({
         initialValues,
-        onSubmit: async (values) => {
-            try {
-                const response = await axios.post("http://localhost:9080/register-user", values, {
-                    withCredentials: true
-                });
-                setMessage(response.data.message);
-            } catch (error) {
-                if (error.response) {
-                    setMessage(error.response.data);
-                } else {
-                    setMessage("Registration failed. Please try again.");
-                }
-            }
-        },
-        validate,
-    });
-
+        onSubmit,
+        validate   
+    }); 
+    
     return (
         <div className="signup">
             <form onSubmit={formik.handleSubmit} className="form-container">
-                <input type="text" name="username" placeholder="Username" {...formik.getFieldProps("username")} />
-                {formik.touched.name && formik.errors.name && <div className="error">{formik.errors.name}</div>}
+                <div className="form-control">
+                    <input 
+                        type='text' 
+                        name='name' 
+                        placeholder='Name'
+                        onChange={formik.handleChange} 
+                        value={formik.values.name} 
+                        onBlur={formik.handleBlur} />
+                    {formik.touched.name && formik.errors.name ? <div className='error'>{formik.errors.name}</div> : null}
+                </div>
 
-                <input type="email" name="email" placeholder="Email" {...formik.getFieldProps("email")} />
-                {formik.touched.email && formik.errors.email && <div className="error">{formik.errors.email}</div>}
+                <div className="form-control">
+                    <input 
+                        type='email' 
+                        name='email' 
+                        placeholder='Email'
+                        onChange={formik.handleChange} 
+                        value={formik.values.email} 
+                        onBlur={formik.handleBlur} />
+                    {formik.touched.email && formik.errors.email ? <div className='error'>{formik.errors.email}</div> : null}
+                </div>
 
-                <input type="text" name="institute" placeholder="Institute" {...formik.getFieldProps("institute")} />
-                {formik.touched.institute && formik.errors.institute && <div className="error">{formik.errors.institute}</div>}
+                <div className="form-control">
+                    <input 
+                        type='text' 
+                        name='institute' 
+                        placeholder='Institute'
+                        onChange={formik.handleChange} 
+                        value={formik.values.institute} 
+                        onBlur={formik.handleBlur} />
+                    {formik.touched.institute && formik.errors.institute ? <div className='error'>{formik.errors.institute}</div> : null}
+                </div>
 
-                <input type="password" name="password" placeholder="Password" {...formik.getFieldProps("password")} />
-                {formik.touched.password && formik.errors.password && <div className="error">{formik.errors.password}</div>}
+                <div className="form-control">
+                    <input 
+                        type='text' 
+                        name='password' 
+                        placeholder='Password'
+                        onChange={formik.handleChange} 
+                        value={formik.values.password} 
+                        onBlur={formik.handleBlur} />
+                    {formik.touched.password && formik.errors.password ? <div className='error'>{formik.errors.password}</div> : null}
+                </div>
 
-                <input type="password" name="confirmPassword" placeholder="Confirm Password" {...formik.getFieldProps("confirmPassword")} />
-                {formik.touched.confirmPassword && formik.errors.confirmPassword && <div className="error">{formik.errors.confirmPassword}</div>}
+                <div className="form-control">
+                    <input 
+                        type='text' 
+                        name='confirmPassword' 
+                        placeholder='Confirm Password'
+                        onChange={formik.handleChange} 
+                        value={formik.values.confirmPassword} 
+                        onBlur={formik.handleBlur} />
+                    {formik.touched.confirmPassword && formik.errors.confirmPassword ? <div className='error'>{formik.errors.confirmPassword}</div> : null}
+                </div>
 
-                <button type="submit" className="submit-btn">Sign Up</button>
-
-                {message && <div className="message">{message}</div>}
+                <button type='submit' className="submit-btn">Sign Up</button>
             </form>
         </div>
     );
 };
-
 
 export default Signup;

@@ -1,8 +1,8 @@
 import React from 'react';
 import './CSS/Home.css';
-import QuestionForm from '../Components/QuestionForm/QuestionForm.js'
 import Questions from '../Components/Questions/Questions.js';
 import ChemistryQuiz from '../Components/Quiz/ChemistryQuiz.js';
+import AdminQuestionForm from '../Components/AdminQuestionForm/AdminQuestionForm.js'
 
 const Home = () => {
   return (
@@ -15,9 +15,8 @@ const Home = () => {
         <h3>Take a Chemistry Quiz</h3>
       </div>
       <ChemistryQuiz/>  
-      <QuestionForm/>  
-
-      
+      <br></br>
+      <AdminQuestionForm/>
     </>
     
   );

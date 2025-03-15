@@ -16,9 +16,7 @@ const Login = () => {
 
     const onSubmit = async (values) => {
         try {
-            const response = await axios.post('http://localhost:9080/login-user', values, {
-                withCredentials: true
-            });
+            const response = await axios.post('http://localhost:5000/submit', values);
             login(response.data);
             navigate('/profile');
         } catch (error) {
