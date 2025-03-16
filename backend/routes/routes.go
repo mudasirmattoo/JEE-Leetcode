@@ -16,5 +16,5 @@ func RegisterRoutes(router *mux.Router) {
 
 	router.HandleFunc("/add-question", questions.QuestionFormHandler)
 
-	router.HandleFunc("/profile", auth.AuthMiddleware(profile.ProfileHandler))
+	router.HandleFunc("/profile", auth.AuthMiddleware(profile.AccountHandler))
 }
