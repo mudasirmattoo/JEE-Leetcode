@@ -37,6 +37,14 @@ const Navbar = () => {
         </li>
 
         {/* Profile Button */}
+        <li className="SignUp" onClick={() => setLine("Register")}>
+          <Link to="/register" className="link">Register</Link>
+          {line === "Register" && <hr />}
+        </li>
+        <li className="Login" onClick={() => setLine("Login")}>
+          <Link to="/login" className="link">Login</Link>
+          {line === "Login" && <hr />}
+        </li>
         <li className="Profile" onClick={() => setLine("Profile")}>
           <Link to="/Profile" className="link">Profile</Link>
           {line === "Profile" && <hr />}

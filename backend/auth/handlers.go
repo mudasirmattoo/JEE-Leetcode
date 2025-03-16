@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -24,6 +24,13 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	var existingUser models.User
+	res := db.DB.Where("username = ?", user.Username).First(&existingUser)
+	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+		http.Error(w, "Username already taken", http.StatusUnauthorized)
 		return
 	}
 
@@ -44,7 +51,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"userID": user.ID,
-		"exp":    time.Now().Add(time.Hour * 1).Unix(),
+		"exp":    time.Now().Add(time.Minute * 30).Unix(),
 	})
 
 	jwtSecret := os.Getenv("JWT_SECRET")
@@ -71,8 +78,11 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"success": true,
 		"message": "Registration successful",
-		"user":    user,
-		"token":   tokenString,
+		"user": map[string]interface{}{
+			"id":       user.ID,
+			"username": user.Username,
+		},
+		"token": tokenString,
 	})
 }
 
@@ -105,7 +115,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{ // return a  *jwt.Token
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"userID": user.ID,
 		"exp":    time.Now().Add(time.Minute * 30).Unix(),
 	})
