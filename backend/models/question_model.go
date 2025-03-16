@@ -7,9 +7,12 @@ import (
 
 type Question struct {
 	gorm.Model
+	UserID         uint           `gorm:"not null"`
+	User           User           `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 	Question       string         `gorm:"size:500;not null"`
 	Difficulty     string         `gorm:"size:50;not null"`
 	Subject        string         `gorm:"size:100;not null"`
+	Topic          string         `gorm:"size:100;not null"`
 	Marks          float64        `gorm:"not null"`
 	NegativeMarks  float64        `gorm:"default:0"`
 	QuestionType   string         `gorm:"size:50;not null"`

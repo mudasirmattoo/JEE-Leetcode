@@ -37,10 +37,17 @@ const ProfileDashboard = ({ onLogout }) => {
           <div className="profile-info">
             <img src="../Assets/Screenshot 2025-02-05 at 11.14.48 AM.png" alt="Profile" className="profile-pic" />
             <div>
+<<<<<<< HEAD
               <h3>{userProfile.name}</h3>
               <p>Rank: {userProfile.rank}</p>
               <p>Email: {userProfile.email}</p>
               <p>Role: {userProfile.role}</p>
+=======
+              <h3>{"mudasir"}</h3>
+              <p>Rank: {"13"}</p>
+              <p>Email: {"muda@gmail.com"}</p>
+              <p>Role: {"CEO"}</p>
+>>>>>>> bd446ae (Profile)
             </div>
           </div>
           

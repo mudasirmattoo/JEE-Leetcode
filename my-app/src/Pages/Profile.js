@@ -6,7 +6,7 @@ import LoginSignup from '../Components/Profile/LoginSignup.js';
 
 const Profile = () => {
   //const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   // Check for an existing token on component mount.
   useEffect(() => {
@@ -33,7 +33,7 @@ const Profile = () => {
       {isAuthenticated ? (
         <ProfileDashboard onLogout={handleLogout} />
       ) : (
-        <LoginSignup onLoginSuccess={onLoginSuccess} />
+        <LoginSignup setIsAuthenticated = {setIsAuthenticated}/>
       )}
     </div>
   );
