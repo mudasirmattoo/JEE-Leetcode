@@ -15,6 +15,7 @@ type Question struct {
 	Topic          string         `gorm:"size:100;not null"`
 	Marks          float64        `gorm:"not null"`
 	NegativeMarks  float64        `gorm:"default:0"`
+	IntegerMark    float64        `gorm:"default:0"`
 	QuestionType   string         `gorm:"size:50;not null"`
 	Options        datatypes.JSON `gorm:"type:json"`
 	CorrectAnswers datatypes.JSON `gorm:"type:json"`
