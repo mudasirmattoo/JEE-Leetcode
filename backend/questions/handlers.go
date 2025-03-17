@@ -3,6 +3,7 @@ package questions
 import (
 	"backend/db"
 	"backend/models"
+	"backend/profile"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -68,4 +69,65 @@ func QuestionFormHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, `{"message": "Question added successfully"}`)
+}
+
+func OptionsAndCorrectHandler(r *http.Request) ([]string, []string) {
+	var question models.Question
+
+	err := db.DB.First(&question, question.ID)
+	if err != nil {
+		return nil, nil
+	}
+
+	var options []string
+	var correct []string
+	json.Unmarshal(question.Options, &options)
+	json.Unmarshal(question.CorrectAnswers, &correct)
+
+	return options, correct
+}
+
+func CorrectAnswerHandler(w http.ResponseWriter, r *http.Request) {
+
+	var question models.Question
+	solved, err := profile.QuestionIsSolved(db.DB, question.ID, question.UserID)
+	if err != nil {
+		return
+	}
+
+	options, correct := OptionsAndCorrectHandler(r)
+	correctOptions := make(map[string]struct{})
+	for _, ans := range correct {
+		correctOptions[ans] = struct{}{}
+	}
+
+	var incorrectOptions []string
+	for _, v := range options {
+		if _, found := correctOptions[v]; !found {
+			incorrectOptions = append(incorrectOptions, v)
+		}
+	}
+
+	numOfCorrect := len(correct)
+	numOfIncorrect := len(incorrectOptions)
+
+	marks := 0.0
+	if solved {
+		if question.QuestionType == "single" {
+			if numOfIncorrect == 0 {
+				marks = question.Marks
+			} else {
+				marks = question.NegativeMarks
+			}
+		} else if question.QuestionType == "integer" {
+			// frontend sai jo integer value aayegi usko yahan compare karne ka pehle
+			marks = question.Marks
+		} else {
+			if numOfIncorrect == 0 {
+				marks = float64(numOfCorrect)
+			} else {
+				marks = marks - float64(question.NegativeMarks)
+			}
+		}
+	}
 }

@@ -5,15 +5,18 @@ import (
 	"backend/models"
 	"encoding/json"
 	"net/http"
+
+	"gorm.io/gorm"
 )
 
 type DashboardResponse struct {
-	Username  string  `json:"username"`
-	Email     string  `json:"email"`
-	Institute string  `json:"institute,omitempty"`
-	ImagePath *string `gorm:"type:text;default:null"`
-	Rank      *int    `gorm:"unique;default:null"`
-	Solved    int     `gorm:"default:0"`
+	Username     string  `json:"username"`
+	Email        string  `json:"email"`
+	Institute    string  `json:"institute,omitempty"`
+	ImagePath    *string `gorm:"type:text;default:null"`
+	Rank         *int    `gorm:"unique;default:null"`
+	Solved       int     `gorm:"default:0"`
+	SolvedPerDay *int    `gorm:"default:0"`
 }
 
 func DashboardHandler(w http.ResponseWriter, r *http.Request) {
@@ -37,14 +40,59 @@ func DashboardHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dashboardrRespone := DashboardResponse{
-		Username:  user.Username,
-		Email:     user.Email,
-		Institute: user.Institute,
-		ImagePath: user.ImagePath,
-		Rank:      user.Rank,
-		Solved:    user.Solved,
+		Username:     user.Username,
+		Email:        user.Email,
+		Institute:    user.Institute,
+		ImagePath:    user.ImagePath,
+		Rank:         user.Rank,
+		Solved:       user.Solved,
+		SolvedPerDay: user.SolvedPerDay,
 	}
 
 	w.Header().Set("Content-Type", "appication/json")
 	json.NewEncoder(w).Encode(dashboardrRespone)
+}
+
+func QuestionIsSolved(db *gorm.DB, questionID uint, userID uint) (bool, error) {
+	var question models.Question
+
+	err := db.First(&question, "id = ? AND user_id = ?", questionID, userID).Error
+	if err != nil {
+		return false, err
+	}
+
+	question.Solved = true
+
+	err = db.Save(&question).Error
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+func CalculateSolvedPerDay(db *gorm.DB) (map[string]int, error) {
+
+	type Response struct {
+		Date   string
+		UserID uint
+		Count  int
+	}
+
+	var results []Response
+
+	solvedQuestions := make(map[string]int)
+
+	err := db.Model(&models.Question{}).Select("DATE(created_at) as date, user_id, COUNT(*) as count").Where("solved = ?", true).
+		Group("date,user_id").Scan(&results).Error
+	if err != nil {
+		return nil, err
+	}
+
+	for _, r := range results {
+		key := string(r.UserID) + ":" + r.Date
+		solvedQuestions[key] = r.Count
+	}
+
+	return solvedQuestions, nil
 }
