@@ -39,7 +39,7 @@ func DashboardHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dashboardrRespone := DashboardResponse{
+	dashboardRespone := DashboardResponse{
 		Username:     user.Username,
 		Email:        user.Email,
 		Institute:    user.Institute,
@@ -50,7 +50,7 @@ func DashboardHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "appication/json")
-	json.NewEncoder(w).Encode(dashboardrRespone)
+	json.NewEncoder(w).Encode(dashboardRespone)
 }
 
 func QuestionIsSolved(db *gorm.DB, questionID uint, userID uint) (bool, error) {
