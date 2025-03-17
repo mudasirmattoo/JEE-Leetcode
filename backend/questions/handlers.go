@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+
+	"gorm.io/datatypes"
 )
 
 func QuestionFormHandler(w http.ResponseWriter, r *http.Request) {
@@ -87,12 +89,21 @@ func OptionsAndCorrectHandler(r *http.Request) ([]string, []string) {
 	return options, correct
 }
 
+type Correct struct {
+	UserID         uint           `gorm:"not null"`
+	Marks          float64        `gorm:"not null"`
+	NegativeMarks  float64        `gorm:"default:0"`
+	IntegerAnswer  float64        `gorm:"default:0"`
+	CorrectAnswers datatypes.JSON `gorm:"type:json"`
+	Solved         bool           `gorm:"not null"`
+}
+
 func CorrectAnswerHandler(w http.ResponseWriter, r *http.Request) {
 
 	var question models.Question
 	solved, err := profile.QuestionIsSolved(db.DB, question.ID, question.UserID)
 	if err != nil {
-		return
+		http.Error(w, "Not solved by you", http.StatusNotFound)
 	}
 
 	options, correct := OptionsAndCorrectHandler(r)
@@ -130,4 +141,7 @@ func CorrectAnswerHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+
+	w.Header().Set("Content-Type", "appication/json")
+	json.NewEncoder(w).Encode(marks)
 }
