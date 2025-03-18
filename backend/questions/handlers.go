@@ -10,8 +10,6 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-
-	"gorm.io/datatypes"
 )
 
 func QuestionFormHandler(w http.ResponseWriter, r *http.Request) {
@@ -73,12 +71,12 @@ func QuestionFormHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, `{"message": "Question added successfully"}`)
 }
 
-func OptionsAndCorrectHandler(r *http.Request) ([]string, []string) {
+func OptionsAndCorrectHandler(questionID uint) ([]string, []string, error) {
 	var question models.Question
 
-	err := db.DB.First(&question, question.ID)
+	err := db.DB.First(&question, questionID).Error
 	if err != nil {
-		return nil, nil
+		return nil, nil, err
 	}
 
 	var options []string
@@ -86,27 +84,35 @@ func OptionsAndCorrectHandler(r *http.Request) ([]string, []string) {
 	json.Unmarshal(question.Options, &options)
 	json.Unmarshal(question.CorrectAnswers, &correct)
 
-	return options, correct
-}
-
-type Correct struct {
-	UserID         uint           `gorm:"not null"`
-	Marks          float64        `gorm:"not null"`
-	NegativeMarks  float64        `gorm:"default:0"`
-	IntegerAnswer  float64        `gorm:"default:0"`
-	CorrectAnswers datatypes.JSON `gorm:"type:json"`
-	Solved         bool           `gorm:"not null"`
+	return options, correct, nil
 }
 
 func CorrectAnswerHandler(w http.ResponseWriter, r *http.Request) {
 
-	var question models.Question
-	solved, err := profile.QuestionIsSolved(db.DB, question.ID, question.UserID)
+	queryParameters := r.URL.Query()
+	questionID, err := strconv.ParseUint(queryParameters.Get("questionID"), 10, 32)
+	if err != nil {
+		http.Error(w, "Invalid question ID", http.StatusBadRequest)
+		return
+	}
+
+	userID, err := strconv.ParseUint(queryParameters.Get("userID"), 10, 32)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	solved, err := profile.QuestionIsSolved(db.DB, uint(questionID), uint(userID))
 	if err != nil {
 		http.Error(w, "Not solved by you", http.StatusNotFound)
 	}
 
-	options, correct := OptionsAndCorrectHandler(r)
+	options, correct, err := OptionsAndCorrectHandler(uint(questionID))
+	if err != nil {
+		http.Error(w, "Question not found", http.StatusNotFound)
+		return
+	}
+
 	correctOptions := make(map[string]struct{})
 	for _, ans := range correct {
 		correctOptions[ans] = struct{}{}
@@ -119,16 +125,23 @@ func CorrectAnswerHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	numOfCorrect := len(correct)
-	numOfIncorrect := len(incorrectOptions)
+	var question models.Question
+	err = db.DB.First(&question, uint(questionID)).Error
+	if err != nil {
+		http.Error(w, "Question details not found", http.StatusInternalServerError)
+		return
+	}
 
 	marks := 0.0
 	if solved {
+		numOfCorrect := len(correct)
+		numOfIncorrect := len(incorrectOptions)
+
 		if question.QuestionType == "single" {
 			if numOfIncorrect == 0 {
 				marks = question.Marks
 			} else {
-				marks = question.NegativeMarks
+				marks = marks - question.NegativeMarks
 			}
 		} else if question.QuestionType == "integer" {
 			// frontend sai jo integer value aayegi usko yahan compare karne ka pehle
@@ -142,6 +155,55 @@ func CorrectAnswerHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	response := map[string]interface{}{
+		"correct_answers":   correct,
+		"incorrect_answers": incorrectOptions,
+		"marks_scored":      marks,
+	}
+
 	w.Header().Set("Content-Type", "appication/json")
-	json.NewEncoder(w).Encode(marks)
+	json.NewEncoder(w).Encode(response)
+}
+
+func SubmitHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
+	}
+
+	var requestData struct {
+		QuestionID      uint     `json:"question_id"`
+		SelectedOptions []string `json:"selected_options"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&requestData)
+	if err != nil {
+		http.Error(w, "Invalid request data", http.StatusBadRequest)
+		return
+	}
+
+	var question models.Question
+
+	err = db.DB.First(&question, requestData.QuestionID).Error
+	if err != nil {
+		http.Error(w, "Question not found", http.StatusNotFound)
+		return
+	}
+
+	selectedOptionsKiJson, err := json.Marshal(requestData.SelectedOptions)
+	if err != nil {
+		http.Error(w, "Failed to encode selected options into json", http.StatusInternalServerError)
+		return
+	}
+
+	question.SelectedOptions = selectedOptionsKiJson
+	if err := db.DB.Save(&question).Error; err != nil {
+		http.Error(w, "Save nahi hua", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success":          true,
+		"selected_options": requestData.SelectedOptions,
+	})
 }
