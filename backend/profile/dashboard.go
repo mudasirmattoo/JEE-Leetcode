@@ -5,6 +5,7 @@ import (
 	"backend/models"
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -62,6 +63,7 @@ func QuestionIsSolved(db *gorm.DB, questionID uint, userID uint) (bool, error) {
 	}
 
 	question.Solved = true
+	question.SolvedAt = time.Now()
 
 	err = db.Save(&question).Error
 	if err != nil {
@@ -71,7 +73,7 @@ func QuestionIsSolved(db *gorm.DB, questionID uint, userID uint) (bool, error) {
 	return true, nil
 }
 
-func CalculateSolvedPerDay(db *gorm.DB) (map[string]int, error) {
+func CalculateSolvedPerDay(db *gorm.DB, userID uint) (map[string]int, int, error) {
 
 	type Response struct {
 		Date   string
@@ -81,18 +83,20 @@ func CalculateSolvedPerDay(db *gorm.DB) (map[string]int, error) {
 
 	var results []Response
 
-	solvedQuestions := make(map[string]int)
+	SolvedPerDay := make(map[string]int)
 
-	err := db.Model(&models.Question{}).Select("DATE(created_at) as date, user_id, COUNT(*) as count").Where("solved = ?", true).
-		Group("date,user_id").Scan(&results).Error
+	err := db.Model(&models.Question{}).Select("DATE(solved_at) as date, user_id, COUNT(*) as count").Where("user_id AND solved = ?", userID, true).
+		Group("DATE(solved_at)").Order("DATE(solved_at) ASC").Scan(&results).Error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
+	TotalSolved := 0
 	for _, r := range results {
 		key := string(r.UserID) + ":" + r.Date
-		solvedQuestions[key] = r.Count
+		SolvedPerDay[key] = r.Count
+		TotalSolved = TotalSolved + r.Count
 	}
 
-	return solvedQuestions, nil
+	return SolvedPerDay, TotalSolved, nil
 }

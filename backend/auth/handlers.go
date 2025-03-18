@@ -7,6 +7,7 @@ import (
 	"errors"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -164,4 +165,49 @@ func LogoutHandler(w http.ResponseWriter, r *http.Request) {
 		"success": true,
 		"message": "you have been logged out",
 	})
+}
+
+type UpdateProfileKiRequest struct {
+	Institute *string `gorm:"size:255" json:"institute"`
+	ImagePath *string `gorm:"type:text;default:null"`
+}
+
+func EditProfileHandler(w http.ResponseWriter, r *http.Request) {
+	userid := r.URL.Query().Get("id")
+	userID, err := strconv.Atoi(userid)
+
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	var request UpdateProfileKiRequest
+	err = json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	var user models.User
+	err = db.DB.First(&user, userID).Error
+	if err != nil {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	if request.Institute != nil {
+		user.Institute = *request.Institute
+	}
+	if request.ImagePath != nil {
+		user.ImagePath = request.ImagePath
+	}
+
+	err = db.DB.Save(&user).Error
+	if err != nil {
+		http.Error(w, "Failed to update profile", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Profile updated successfully"})
 }

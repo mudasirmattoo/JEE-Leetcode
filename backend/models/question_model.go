@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
@@ -22,6 +24,7 @@ type Question struct {
 	SelectedOptions datatypes.JSON `gorm:"type:json"`
 	Explanation     string         `gorm:"type:text"`
 	Solved          bool           `gorm:"not null"`
+	SolvedAt        time.Time      `gorm:"default:null"`
 	ImagePath       *string        `gorm:"type:text;default:null"`
 	Comments        []string
 }
