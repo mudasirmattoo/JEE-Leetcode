@@ -164,3 +164,46 @@ func CorrectAnswerHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "appication/json")
 	json.NewEncoder(w).Encode(response)
 }
+
+func SubmitHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "POST" {
+		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
+	}
+
+	var requestData struct {
+		QuestionID      uint     `json:"question_id"`
+		SelectedOptions []string `json:"selected_options"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&requestData)
+	if err != nil {
+		http.Error(w, "Invalid request data", http.StatusBadRequest)
+		return
+	}
+
+	var question models.Question
+
+	err = db.DB.First(&question, requestData.QuestionID).Error
+	if err != nil {
+		http.Error(w, "Question not found", http.StatusNotFound)
+		return
+	}
+
+	selectedOptionsKiJson, err := json.Marshal(requestData.SelectedOptions)
+	if err != nil {
+		http.Error(w, "Failed to encode selected options into json", http.StatusInternalServerError)
+		return
+	}
+
+	question.SelectedOptions = selectedOptionsKiJson
+	if err := db.DB.Save(&question).Error; err != nil {
+		http.Error(w, "Save nahi hua", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success":          true,
+		"selected_options": requestData.SelectedOptions,
+	})
+}
