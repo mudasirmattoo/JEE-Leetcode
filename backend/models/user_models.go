@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -9,9 +11,18 @@ type User struct {
 	Username     string  `gorm:"unique;not null" json:"username"`
 	Email        string  `gorm:"unique;not null" json:"email"`
 	Password     string  `json:"password"`
-	Institute    string  `gorm:"size:255"`
+	Institute    string  `gorm:"size:255" json:"institute"`
 	ImagePath    *string `gorm:"type:text;default:null"`
-	Rank         *int    `gorm:"unique;default:null"`
+	Rank         *int    `gorm:"unique;default:null" json:"rank"`
 	Solved       int     `gorm:"default:0"`
 	SolvedPerDay *int    `gorm:"default:null"`
+	Role         string  `gorm:"default:null" json:"role"`
+}
+
+type PasswordReset struct {
+	ID        uint      `gorm:"primaryKey"`
+	UserID    uint      `gorm:"not null"`
+	User      User      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	Token     string    `gorm:"unique;not null"`
+	ExpiresAt time.Time `gorm:"not null"`
 }
