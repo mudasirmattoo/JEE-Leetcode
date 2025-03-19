@@ -5,71 +5,9 @@ import (
 	"backend/models"
 	"backend/profile"
 	"encoding/json"
-	"fmt"
-	"io"
 	"net/http"
-	"os"
 	"strconv"
 )
-
-func QuestionFormHandler(w http.ResponseWriter, r *http.Request) {
-
-	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid Request Method", http.StatusMethodNotAllowed)
-		return
-	}
-
-	err := r.ParseMultipartForm(10 << 20)
-	if err != nil {
-		http.Error(w, "Failed to parse form", http.StatusBadRequest)
-		return
-	}
-
-	var question models.Question
-	question.Question = r.FormValue("question")
-	question.Difficulty = r.FormValue("difficulty")
-	question.Subject = r.FormValue("subject")
-	marks, err := strconv.ParseFloat(r.FormValue("marks"), 64)
-	if err != nil {
-		http.Error(w, "Invalid marks value", http.StatusBadRequest)
-		return
-	}
-	question.Marks = marks
-
-	negativeMarks, err := strconv.ParseFloat(r.FormValue("negativeMarks"), 64)
-	if err != nil {
-		http.Error(w, "Invalid negative marks value", http.StatusBadRequest)
-		return
-	}
-	question.NegativeMarks = negativeMarks
-
-	question.QuestionType = r.FormValue("questionType")
-	question.Explanation = r.FormValue("explanation")
-	question.Solved = r.FormValue("solved") == "true"
-
-	json.Unmarshal([]byte(r.FormValue("options")), &question.Options)
-	json.Unmarshal([]byte(r.FormValue("correctAnswers")), &question.CorrectAnswers)
-
-	file, meta, err := r.FormFile("image") // meta -----> metadata about the image
-	if err == nil {
-		defer file.Close()
-		imagePath := "uploads/" + meta.Filename
-		outFile, _ := os.Create(imagePath)
-		defer outFile.Close()
-		io.Copy(outFile, file)
-		question.ImagePath = &imagePath
-
-	}
-
-	result := db.DB.Create(&question)
-
-	if result.Error != nil {
-		http.Error(w, "Failed to create the Question", http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, `{"message": "Question added successfully"}`)
-}
 
 func OptionsAndCorrectHandler(questionID uint) ([]string, []string, error) {
 	var question models.Question
@@ -104,7 +42,8 @@ func CorrectAnswerHandler(w http.ResponseWriter, r *http.Request) {
 
 	solved, err := profile.QuestionIsSolved(db.DB, uint(questionID), uint(userID))
 	if err != nil {
-		http.Error(w, "Not solved by you", http.StatusNotFound)
+		http.Error(w, "Bhai Aapne solve nahi kiya hai", http.StatusNotFound)
+		return
 	}
 
 	options, correct, err := OptionsAndCorrectHandler(uint(questionID))
@@ -141,7 +80,7 @@ func CorrectAnswerHandler(w http.ResponseWriter, r *http.Request) {
 			if numOfIncorrect == 0 {
 				marks = question.Marks
 			} else {
-				marks = marks - question.NegativeMarks
+				marks -= question.NegativeMarks
 			}
 		} else if question.QuestionType == "integer" {
 			// frontend sai jo integer value aayegi usko yahan compare karne ka pehle
@@ -150,7 +89,7 @@ func CorrectAnswerHandler(w http.ResponseWriter, r *http.Request) {
 			if numOfIncorrect == 0 {
 				marks = float64(numOfCorrect)
 			} else {
-				marks = marks - float64(question.NegativeMarks)
+				marks -= float64(question.NegativeMarks)
 			}
 		}
 	}
@@ -161,13 +100,14 @@ func CorrectAnswerHandler(w http.ResponseWriter, r *http.Request) {
 		"marks_scored":      marks,
 	}
 
-	w.Header().Set("Content-Type", "appication/json")
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
 
 func SubmitHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
+	if r.Method != "POST" {
 		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
+		return
 	}
 
 	var requestData struct {
