@@ -20,7 +20,7 @@ type User struct {
 }
 
 type PasswordReset struct {
-	ID        uint      `gorm:"primaryKey"`
+	gorm.Model
 	UserID    uint      `gorm:"not null"`
 	User      User      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 	Token     string    `gorm:"unique;not null"`
