@@ -3,6 +3,7 @@ package routes
 import (
 	"backend/auth"
 	"backend/db"
+	"backend/practice"
 	"backend/profile"
 	"backend/questions"
 	"net/http"
@@ -24,4 +25,5 @@ func RegisterRoutes(router *mux.Router) {
 	router.HandleFunc("/request-password-reset", auth.AuthMiddleware(auth.PasswordResetRequest))
 	router.HandleFunc("/edit-password", auth.AuthMiddleware(auth.ResetPassword))
 	router.HandleFunc("/submit-question", auth.AuthMiddleware(questions.SubmitHandler))
+	router.HandleFunc("/practice", auth.AuthMiddleware(practice.PracticeHandler))
 }
