@@ -13,6 +13,7 @@ func PracticeHandler(w http.ResponseWriter, r *http.Request) {
 
 	numOfQuestions, err := strconv.Atoi(queryParameters.Get("count"))
 	difficulty := queryParameters.Get("difficulty")
+	timeLimit := queryParameters.Get("time_limit")
 
 	if err != nil || numOfQuestions <= 0 {
 		numOfQuestions = 5
@@ -27,10 +28,14 @@ func PracticeHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = query.Order("RANDOM()").Limit(numOfQuestions).Find(&questions).Error
 	if err != nil {
-		http.Error(w, "Question load nahi hua bhai", http.StatusInternalServerError)
+		http.Error(w, "Questions load nahi huve bhai", http.StatusInternalServerError)
 		return
 	}
 
+	response := map[string]interface{}{
+		"questions":  questions,
+		"time-limit": timeLimit,
+	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(questions)
+	json.NewEncoder(w).Encode(response)
 }
