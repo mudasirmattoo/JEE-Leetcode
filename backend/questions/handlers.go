@@ -111,6 +111,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var requestData struct {
+		UserID          uint     `json:"user_id"`
 		QuestionID      uint     `json:"question_id"`
 		SelectedOptions []string `json:"selected_options"`
 	}
@@ -141,9 +142,24 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	_, correctAnswers, _ := OptionsAndCorrectHandler(requestData.QuestionID)
+
+	correctMap := make(map[string]struct{})
+	for _, ans := range correctAnswers {
+		correctMap[ans] = struct{}{}
+	}
+
+	var incorrectOptions []string
+	for _, opt := range requestData.SelectedOptions {
+		if _, found := correctMap[opt]; !found {
+			incorrectOptions = append(incorrectOptions, opt)
+		}
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"success":          true,
-		"selected_options": requestData.SelectedOptions,
+		"success":           true,
+		"selected_options":  requestData.SelectedOptions,
+		"incorrect_options": incorrectOptions,
 	})
 }
