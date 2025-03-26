@@ -8,9 +8,11 @@ import (
 
 type User struct {
 	gorm.Model
-	Username     string  `gorm:"unique;not null" json:"username"`
-	Email        string  `gorm:"unique;not null" json:"email"`
-	Password     string  `json:"password"`
+	Username string `gorm:"unique;not null" json:"username"`
+	Email    string `gorm:"unique;not null" json:"email"`
+	Password string `json:"-"`
+	GoogleID string `gorm:"unique"`
+
 	Institute    string  `gorm:"size:255" json:"institute"`
 	ImagePath    *string `gorm:"type:text;default:null"`
 	Rank         *int    `gorm:"unique;default:null" json:"rank"`
