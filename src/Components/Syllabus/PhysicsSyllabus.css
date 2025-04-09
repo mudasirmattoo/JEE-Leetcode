@@ -1,0 +1,64 @@
+.PhysicsSyllabus {
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 10px auto;
+    background-color: #f9f9f9;
+    font-family: "Quicksand";
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    gap: 90px; /* Add more space between the heading row and sections */
+    padding: 30px;
+}
+
+/* Flexbox for aligning headings and topics */
+
+
+.physics-section-wrapper {
+    display: flex;
+    justify-content: space-evenly; /* Even spacing between sections */
+    align-items: flex-start; /* Align sections at the top */
+    width: 100%; /* Make rows full-width to align with headings */
+    gap: 40px; /* Space between individual sections */
+}
+
+.physics-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center; /* Center align the text */
+    max-width: 200px; /* Limit the width of each section */
+}
+
+/* Styling for headings */
+
+
+/* List styling for topics */
+.physics-section ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+
+/* Link styling */
+.physics-section a {
+    text-decoration: none;
+    color: #830202;;
+    font-size: 20px;
+    transition: transform 0.3s, color 0.3s;
+}
+
+.physics-section a:hover {
+    color: black;
+    transform: scale(1.05);
+}
+
