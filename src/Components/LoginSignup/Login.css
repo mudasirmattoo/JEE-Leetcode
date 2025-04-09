@@ -1,0 +1,72 @@
+/* General Container Styling */
+.login {
+    
+    background-color: #f8f9fa;
+    padding: 50px;
+    max-width: 600px;
+    margin: 100px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Quicksand', sans-serif;
+}
+
+/* Form Styles */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 50px; /* Increased gap between input fields */
+    padding: 10px;
+}
+
+/* Individual Form Control Styling */
+.form-control {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: #f8f9fa;
+    border: none;
+}
+
+/* Input Fields Styling */
+input {
+    padding: 12px; /* Increased padding for better usability */
+    border: 1px solid white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+    font-family: 'Quicksand', sans-serif;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+input:focus {
+    border-color: #830202; /* Highlight input on focus */
+    
+}
+
+/* Error Message Styling */
+.error {
+    color: #e74c3c;
+    font-size: 0.875rem;
+}
+
+/* Submit Button Styling */
+.submit-btn {
+    margin-top: 20px;
+    background-color: #853939;
+    color: white;
+    padding: 12px 20px; /* Adjusted padding for better appearance */
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: scale(1.05); /* Slight lift on hover */
+}
+
+/* Hiding All Labels */
+label {
+    display: none;
+}
