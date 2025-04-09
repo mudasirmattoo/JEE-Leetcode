@@ -44,7 +44,7 @@ function App() {
           <Route path="/Practice" element={<Practice />} />
           <Route path="/Explore" element={<Explore />} />
           <Route path="/test" element={<TestPage />} />
-
+          {/* Hello Mude Laanch */}
           <Route path="/profile/ProfileDashboard" element={<PrivateRoute element={<ProfileDashboard />} />} />
         </Routes>
       </Router>
