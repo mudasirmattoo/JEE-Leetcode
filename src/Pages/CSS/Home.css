@@ -1,0 +1,62 @@
+/* Welcome message container */
+.welcomemsg {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  text-align: center;
+  padding: 20px;
+  font-family: "Quicksand", sans-serif;
+  gap: 10px; /* Add some spacing between h4 and h1 */
+  animation: fadeIn 0.6s ease-in-out; /* Apply the fade-in animation */
+}
+
+/* Styling for the smaller heading */
+.welcomemsg h4 {
+  font-size: 18px;
+  font-weight: 300;
+  margin: 0; /* Remove margin to align properly */
+}
+
+/* Styling for the larger heading */
+.welcomemsg h1 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0; /* Remove margin to align properly */
+}
+
+/* Smooth fade-in animation */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(-10px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+
+.practice-message{
+  font-family: "Quicksand";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 40px auto; 
+}
+
+.chemistry-quiz-msg{
+  font-family: "Quicksand";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 180px; 
+}
+
+/* Adjust Questions section if needed */
+.Questions {
+  width: 100%;
+  max-width: 800px; /* Adjust as needed */
+  margin-top: 20px;
+}

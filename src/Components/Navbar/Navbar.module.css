@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+/* Navbar Container */
+.Navbar {
+    display: flex;
+    justify-content: space-between; /* Align Home to the left and Profile to the right */
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 25px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: "Quicksand", sans-serif;
+}
+
+/* Links Container */
+.Links {
+    display: flex;
+    gap: 50px; /* Adjust spacing between the center buttons */
+    list-style: none;
+    padding: 0;
+    margin: 0 auto; /* Center align the Links container */
+    flex-grow: 1;
+    justify-content: center;
+}
+
+/* Link Styles */
+.link {
+    text-decoration: none; /* Remove underline */
+    color: #6e3272; /* Default text color */
+    font-size: 20px;
+    font-weight: 500;
+    transition: color 0.3s ease-in-out;
+}
+
+.link:hover {
+    text-decoration: none; /* Prevent underline */
+    color: inherit; /* Keep the default color */
+}
+
+
+
+
+/* Active Button Styling */
+.Links li {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.Links li:hover {
+    transform: translateY(-3px);
+}
+
+/* Home Button Styling */
+.Home {
+    padding : 0px 15px;
+    margin-right: auto; /* Push to the far left */
+    font-weight: bold;
+}
+
+/* Profile Button Styling */
+.Profile {
+    margin-left: auto; /* Push to the far right */
+    font-weight: bold;
+    padding-right : 15px;
+}
+
+/* Underline for Active/Focused Buttons */
+.Links li hr {
+    border: none;
+    width: 100%;
+    height: 3px;
+    border-radius: 8px;
+    background-color: #5ba8ff;
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    margin: auto;
+}
+
+.cart {
+    display: flex;
+    align-items: center;
+    gap: 45px;
+}
+
+.cart button {
+    width: 157px;
+    height: 58px;
+    outline: none;
+    border: 1px solid #7a7a7a;
+    border-radius: 75px;
+    color: #515151;
+    font-size: 20px;
+    font-weight: 500;
+    background: white;
+    cursor: pointer;
+}
+
+.cart button:active {
+    background: #FF4141;
+}
+.nav_cart_count{
+    width: 22px;
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -35px;
+    margin-left: -55px;
+    border-radius: 11px;
+    font-size: 14px;
+    background: red;
+    color: white;
+}
