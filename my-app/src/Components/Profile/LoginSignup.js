@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+//simport './LoginSignup.css'; // Create or customize your CSS as needed
 
-const LoginSignup = ({setIsAuthenticated}) => {
+const LoginSignup = ({ onLoginSuccess }) => {
   const [isLogin, setIsLogin] = useState(false); // false => show sign up form
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
@@ -38,7 +39,7 @@ const LoginSignup = ({setIsAuthenticated}) => {
         // In a real application, replace this logic with an API call.
         localStorage.setItem('token', 'dummy_token');
         localStorage.setItem('user', JSON.stringify({ email: formData.email }));
-        setIsAuthenticated(true);
+        onLoginSuccess();
       } else {
         setError("Please enter email and password.");
       }

@@ -28,6 +28,8 @@ func DashboardHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user models.User
+	var stats models.UserStats
+
 	username := r.URL.Query().Get("username")
 	if username == "" {
 		http.Error(w, "Username required", http.StatusBadRequest)
@@ -45,9 +47,9 @@ func DashboardHandler(w http.ResponseWriter, r *http.Request) {
 		Email:        user.Email,
 		Institute:    user.Institute,
 		ImagePath:    user.ImagePath,
-		Rank:         user.Rank,
+		Rank:         stats.Rank,
 		Solved:       user.Solved,
-		SolvedPerDay: user.SolvedPerDay,
+		SolvedPerDay: stats.SolvedPerDay,
 	}
 
 	w.Header().Set("Content-Type", "appication/json")
@@ -56,14 +58,15 @@ func DashboardHandler(w http.ResponseWriter, r *http.Request) {
 
 func QuestionIsSolved(db *gorm.DB, questionID uint, userID uint) (bool, error) {
 	var question models.Question
+	var attempt models.UserQuestionAttempt
 
 	err := db.First(&question, "id = ? AND user_id = ?", questionID, userID).Error
 	if err != nil {
 		return false, err
 	}
 
-	question.Solved = true
-	question.SolvedAt = time.Now()
+	attempt.Solved = true
+	attempt.SolvedAt = time.Now()
 
 	err = db.Save(&question).Error
 	if err != nil {

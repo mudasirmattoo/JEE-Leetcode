@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:9080/';
+const API_URL = 'http://localhost:5004/api';
 
 export const getQuestionsByTopic = async (topic) => {
   console.log(topic);
@@ -33,7 +33,7 @@ export const getUserProfile = async () => {
       return { data: null };
     }
 
-    const response = await axios.get(`${API_URL}/profile`, {
+    const response = await axios.get(`${API_URL}/user/profile`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

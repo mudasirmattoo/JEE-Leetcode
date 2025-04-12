@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
-//import { useNavigate } from 'react-router-dom';
-import './CSS/Profile.css'; 
 import ProfileDashboard from '../Components/Profile/ProfileDashboard.js';
 import LoginSignup from '../Components/Profile/LoginSignup.js';
 
 const Profile = () => {
-  //const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Check for an existing token on component mount.
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -24,16 +20,16 @@ const Profile = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setIsAuthenticated(false);
-    // Optionally, navigate to another page if needed.
-    // navigate('/login');
   };
 
   return (
-    <div className="profile-page">
+    <div className="font-quicksand flex justify-center items-center min-h-screen bg-gray-100">
       {isAuthenticated ? (
         <ProfileDashboard onLogout={handleLogout} />
       ) : (
-        <LoginSignup setIsAuthenticated = {setIsAuthenticated}/>
+        <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <LoginSignup onLoginSuccess={onLoginSuccess} />
+        </div>
       )}
     </div>
   );

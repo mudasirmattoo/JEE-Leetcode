@@ -6,7 +6,7 @@
     display: flex;
     justify-content: space-between; /* Align Home to the left and Profile to the right */
     align-items: center;
-    background-color: #f8f9fa;
+    background-color: #d3d3d3;
     padding: 25px 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     font-family: "Quicksand", sans-serif;
@@ -28,7 +28,7 @@
     text-decoration: none; /* Remove underline */
     color: #830202; /* Default text color */
     font-size: 20px;
-    font-weight: 500;
+    font-weight: bold; /* Make font bold */
     transition: color 0.3s ease-in-out;
 }
 
@@ -36,8 +36,6 @@
     text-decoration: none; /* Prevent underline */
     color: #830202; /* Keep the default color */
 }
-
-
 
 
 /* Active Button Styling */
@@ -78,3 +76,13 @@
     left: 0;
     margin: auto;
   }
+
+/* Practice Navbar Container */
+.PracticeNavbar {
+    display: flex;
+    justify-content: center; /* Center align the Practice link */
+    align-items: center;
+    padding: 10px; /* Adjust padding as needed */
+    background-color: #f8f9fa; /* Match the navbar background */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Match the navbar shadow */
+}
