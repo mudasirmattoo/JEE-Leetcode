@@ -42,7 +42,7 @@ func ConnectDB() {
 	DB = db
 	fmt.Println("connected to PostgreSQL ")
 
-	DB.AutoMigrate(&models.User{}, &models.Question{}, &models.PasswordReset{})
+	DB.AutoMigrate(&models.User{}, &models.UserStats{}, &models.UserQuestionAttempt{}, &models.Question{}, &models.PasswordReset{})
 
 }
 
@@ -71,6 +71,7 @@ func QuestionFormHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var question models.Question
+	var attempt models.UserQuestionAttempt
 	question.Question = r.FormValue("question")
 	question.Difficulty = r.FormValue("difficulty")
 	question.Subject = r.FormValue("subject")
@@ -91,7 +92,7 @@ func QuestionFormHandler(w http.ResponseWriter, r *http.Request) {
 
 	question.QuestionType = r.FormValue("questionType")
 	question.Explanation = r.FormValue("explanation")
-	question.Solved = r.FormValue("solved") == "true"
+	attempt.Solved = r.FormValue("solved") == "true"
 
 	optionsJSON := r.FormValue("options")
 	correctAnswersJSON := r.FormValue("correctAnswers")

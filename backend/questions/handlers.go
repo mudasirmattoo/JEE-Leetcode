@@ -123,6 +123,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var question models.Question
+	var attempt models.UserQuestionAttempt
 
 	err = db.DB.First(&question, requestData.QuestionID).Error
 	if err != nil {
@@ -136,7 +137,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	question.SelectedOptions = selectedOptionsKiJson
+	attempt.SelectedOptions = selectedOptionsKiJson
 	if err := db.DB.Save(&question).Error; err != nil {
 		http.Error(w, "Save nahi hua", http.StatusInternalServerError)
 		return
