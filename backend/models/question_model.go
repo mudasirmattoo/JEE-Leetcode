@@ -27,3 +27,5 @@ type Question struct {
 	ImagePath       *string   `gorm:"type:text;default:null"`
 	Comments        []string  `gorm:"-"`
 }
+
+// khoob bhalo chee
