@@ -7,12 +7,12 @@ export const UserProvider = ({ children }) => {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const response = await getUserProfile();
-        setUserProfile({name:"Mudasir"});
+        setUserProfile(response.data);
       } catch (err) {
         console.error('Error in UserContext:', err);
         setError(err.message);

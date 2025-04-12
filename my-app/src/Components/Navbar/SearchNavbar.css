@@ -5,7 +5,7 @@
 }
 
 .search-container {
-  max-width: 800px;
+  max-width: auto;
   margin: 0 auto;
   padding: 0 20px;
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getRandomQuestionsByTopic } from '../services/api.js';
-import '../CSS/ExamPage.css';
+// import '../CSS/ExamPage.css';
 
 const ExamPage = () => {
   const [questions, setQuestions] = useState([]);

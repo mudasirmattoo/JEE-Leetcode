@@ -1,54 +1,35 @@
 import React, { useState } from "react";
-import "./Navbar.css"
 import { Link } from "react-router-dom";
-
 
 const Navbar = () => {
   const [line, setLine] = useState("Home");
+
+  const navItems = [
+    { label: "Tango", path: "/", key: "Home", custom: "mr-auto" },
+    { label: "Physics", path: "/Physics", key: "Physics" },
+    { label: "Chemistry", path: "/Chemistry", key: "Chemistry" },
+    { label: "Maths", path: "/Maths", key: "Maths" },
+    { label: "Biology", path: "/Biology", key: "Biology" },
+    { label: "Profile", path: "/Profile", key: "Profile", custom: "ml-auto mr-5" },
+  ];
+
   return (
-    <nav className="Navbar">
-      <ul className="Links">
-        {/* Home Button */}
-        <li className="Home" onClick={() => setLine("Home")}>
-          <Link to="/" className="link">Tango</Link>
-          {line === "Home" && <hr />}
-        </li>
-
-        {/* Physics Button */}
-        <li onClick={() => setLine("Physics")}>
-          <Link to="/Physics" className="link">Physics</Link>
-          {line === "Physics" && <hr />}
-        </li>
-
-        {/* Chemistry Button */}
-        <li onClick={() => setLine("Chemistry")}>
-          <Link to="/Chemistry" className="link">Chemistry</Link>
-          {line === "Chemistry" && <hr />}
-        </li>
-
-        {/* SeaMathsrch Button */}
-        <li onClick={() => setLine("Maths")}>
-          <Link to="/Maths" className="link">Maths</Link>
-          {line === "Maths" && <hr />}
-        </li>
-        <li onClick={() => setLine("Biology")}>
-          <Link to="/Biology" className="link">Biology</Link>
-          {line === "Biology" && <hr />}
-        </li>
-
-        {/* Profile Button */}
-        <li className="SignUp" onClick={() => setLine("Register")}>
-          <Link to="/register" className="link">Register</Link>
-          {line === "Register" && <hr />}
-        </li>
-        <li className="Login" onClick={() => setLine("Login")}>
-          <Link to="/login" className="link">Login</Link>
-          {line === "Login" && <hr />}
-        </li>
-        <li className="Profile" onClick={() => setLine("Profile")}>
-          <Link to="/Profile" className="link">Profile</Link>
-          {line === "Profile" && <hr />}
-        </li>
+    <nav className="flex items-center justify-between bg-gray-300 px-5 py-6 shadow-md font-quicksand">
+      <ul className="flex flex-grow justify-center gap-[50px] list-none m-0 p-0">
+        {navItems.map(({ label, path, key, custom = "" }) => (
+          <li
+            key={key}
+            className={`relative px-3 cursor-pointer transition-all duration-300 font-bold hover:-translate-y-1 ${custom}`}
+            onClick={() => setLine(key)}
+          >
+            <Link to={path} className="text-[#830202] text-[20px] no-underline hover:text-[#830202]">
+              {label}
+            </Link>
+            {line === key && (
+              <hr className="absolute bottom-[-5px] left-0 w-full h-[3px] bg-black rounded-md" />
+            )}
+          </li>
+        ))}
       </ul>
     </nav>
   );

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './SearchNavbar.css';
 
 const SearchNavbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -7,12 +6,10 @@ const SearchNavbar = () => {
 
   useEffect(() => {
     const handleSearch = () => {
-      // Implement dynamic search functionality here
-      // This will run whenever searchQuery changes
       console.log('Searching for:', searchQuery);
+      // Future: fetch filtered questions based on query
     };
 
-    // Add debouncing to avoid too many API calls
     const timeoutId = setTimeout(() => {
       if (searchQuery) {
         handleSearch();
@@ -25,15 +22,21 @@ const SearchNavbar = () => {
   }, [searchQuery]);
 
   return (
-    <div className="search-navbar">
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search for questions..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-input"
-        />
+    <div className="bg-[#830202] py-4 font-quicksand">
+      <div className="mx-auto px-5 w-full">
+        <div className="flex gap-3">
+          <input
+            type="text"
+            placeholder="Search for questions..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 px-4 py-2 text-base rounded-md border-none focus:outline-none focus:ring-2 focus:ring-white"
+          />
+          {/* Optional Button if needed in future */}
+          {/* <button className="bg-white text-[#830202] px-5 py-2 font-bold rounded-md transition-all hover:bg-gray-100 hover:-translate-y-1">
+            Search
+          </button> */}
+        </div>
       </div>
     </div>
   );

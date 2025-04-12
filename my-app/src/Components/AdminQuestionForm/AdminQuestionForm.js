@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import axios from "axios";
-import './AdminQuestionForm.css'
 
 const QuestionForm = () => {
     const [formData, setFormData] = useState({
@@ -9,7 +8,7 @@ const QuestionForm = () => {
         subject: "",
         marks: "",
         negativeMarks: "",
-        questionType: "single", // single or multiple 
+        questionType: "single",
         options: [{ text: "", isCorrect: false }],
         explanation: "",
         solved: false,
@@ -17,18 +16,15 @@ const QuestionForm = () => {
 
     const [image, setImage] = useState(null);
 
-    // Handles input change for text fields
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    // Handles image file selection
     const handleImageChange = (e) => {
         setImage(e.target.files[0]);
     };
 
-    // Adds a new option dynamically
     const addOption = () => {
         setFormData({
             ...formData,
@@ -36,14 +32,12 @@ const QuestionForm = () => {
         });
     };
 
-    // Updates an option's text
     const updateOptionText = (index, value) => {
         const updatedOptions = [...formData.options];
         updatedOptions[index].text = value;
         setFormData({ ...formData, options: updatedOptions });
     };
 
-    // Toggles correct answer marking
     const toggleCorrectOption = (index) => {
         const updatedOptions = [...formData.options];
 
@@ -57,7 +51,6 @@ const QuestionForm = () => {
         setFormData({ ...formData, options: updatedOptions });
     };
 
-    // Handles form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -88,119 +81,136 @@ const QuestionForm = () => {
     };
 
     return (
-        <div className="question-form-container">
-            <div className="question-form">
-                <form onSubmit={handleSubmit}>
-                    <label>Question:</label>
-                    <textarea 
-                        name="question" 
-                        value={formData.question} 
-                        onChange={handleInputChange} 
-                        required 
-                        style={{ WebkitAppearance: "none", MozAppearance: "none", appearance: "none" }}
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+            <form 
+                onSubmit={handleSubmit}
+                className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl space-y-5"
+            >
+                <h2 className="text-2xl font-semibold text-center text-gray-800">Add Question</h2>
 
-                    />
-                    <label>Upload Image (Optional):</label>
-                    <input 
-                        type="file" 
-                        accept="image/*" 
-                        onChange={handleImageChange} 
-                    />
-                    <label>Subject:</label>
-                    <input 
-                        type="text" 
-                        name="subject" 
-                        value={formData.subject} 
-                        onChange={handleInputChange} 
-                        required 
-                    />
-                    <div className="row">
-                <div className="column">
-                    <label>Difficulty:</label>
-                    <input 
-                        type="text" 
-                        name="difficulty" 
-                        value={formData.difficulty} 
-                        onChange={handleInputChange} 
-                        required 
+                <div>
+                    <label className="block font-medium mb-1">Question</label>
+                    <textarea
+                        name="question"
+                        value={formData.question}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full p-2 border border-gray-300 rounded"
                     />
                 </div>
-                <div className="column">
-                    <label>Type:</label>
-                    <select 
-                        name="questionType" 
-                        value={formData.questionType} 
+
+                <div>
+                    <label className="block font-medium mb-1">Upload Image (Optional)</label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="w-full"
+                    />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="block font-medium mb-1">Subject</label>
+                        <input
+                            type="text"
+                            name="subject"
+                            value={formData.subject}
+                            onChange={handleInputChange}
+                            required
+                            className="w-full p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block font-medium mb-1">Difficulty</label>
+                        <input
+                            type="text"
+                            name="difficulty"
+                            value={formData.difficulty}
+                            onChange={handleInputChange}
+                            required
+                            className="w-full p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <label className="block font-medium mb-1">Marks</label>
+                        <input
+                            type="number"
+                            name="marks"
+                            value={formData.marks}
+                            onChange={handleInputChange}
+                            required
+                            className="w-full p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block font-medium mb-1">Negative Marks</label>
+                        <input
+                            type="number"
+                            name="negativeMarks"
+                            value={formData.negativeMarks}
+                            onChange={handleInputChange}
+                            className="w-full p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label className="block font-medium mb-1">Question Type</label>
+                    <select
+                        name="questionType"
+                        value={formData.questionType}
                         onChange={handleInputChange}
-                        style={{ WebkitAppearance: "none", MozAppearance: "none", appearance: "none" }}
+                        className="w-full p-2 border border-gray-300 rounded"
                     >
                         <option value="single">Single Correct</option>
                         <option value="multiple">Multiple Correct</option>
                     </select>
                 </div>
-            </div>
-            
-        <div className="row">
-            <div className="column">
-                
-                <label>Marks:</label>
-                <input 
-                    type="number" 
-                    name="marks" 
-                    value={formData.marks} 
-                    onChange={handleInputChange} 
-                    required 
-                />
-            </div>
-            <div className="column">
-                
-                <label>Negative Marks:</label>
-                <input 
-                    type="number" 
-                    name="negativeMarks" 
-                    value={formData.negativeMarks} 
-                    onChange={handleInputChange} 
-                />
-            </div>
-        </div>
 
-                    
-
-                    <label>Options:</label>
-                    <div className="options-container">
+                <div>
+                    <label className="block font-medium mb-2">Options</label>
+                    <div className="space-y-2">
                         {formData.options.map((option, index) => (
-                            <div key={index} className="option-item">
-                                <input 
-                                    type="text" 
-                                    value={option.text} 
-                                    onChange={(e) => updateOptionText(index, e.target.value)} 
-                                    required 
+                            <div key={index} className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={option.text}
+                                    onChange={(e) => updateOptionText(index, e.target.value)}
+                                    required
+                                    className="flex-grow p-2 border border-gray-300 rounded"
                                 />
-                                <button 
-                                    type="button" 
-                                    className="correct-option-btn"
+                                <button
+                                    type="button"
                                     onClick={() => toggleCorrectOption(index)}
+                                    className={`px-3 py-1 rounded text-white ${
+                                        option.isCorrect ? "bg-green-600" : "bg-red-600"
+                                    }`}
                                 >
-                                    {option.isCorrect ? '✓' : '×'}
+                                    {option.isCorrect ? "✓" : "×"}
                                 </button>
                             </div>
                         ))}
                     </div>
-                    <button 
-                        type="button" 
-                        className="add-option-btn" 
+                    <button
+                        type="button"
                         onClick={addOption}
+                        className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                     >
                         Add Option
                     </button>
-                    
-                        <br></br>
-                        <br></br>
-                        
-                    <button type="submit" className="submit-btn">
-                        Submit 
-                    </button>
-                </form>
-            </div>
+                </div>
+
+                <button
+                    type="submit"
+                    className="w-full mt-4 py-3 bg-indigo-600 text-white font-semibold rounded hover:bg-indigo-700"
+                >
+                    Submit
+                </button>
+            </form>
         </div>
     );
 };
