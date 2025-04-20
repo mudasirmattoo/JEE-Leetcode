@@ -4,11 +4,10 @@ import (
 	"backend/models"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
-	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
@@ -33,20 +32,51 @@ func ConnectDB() {
 		os.Getenv("DB_SSLMODE"),
 	)
 
+	if os.Getenv("DB_HOST") == "" || os.Getenv("DB_PORT") == "" || os.Getenv("DB_USER") == "" || os.Getenv("DB_PASSWORD") == "" || os.Getenv("DB_NAME") == "" || os.Getenv("DB_SSLMODE") == "" {
+		log.Fatal("Database configuration error: One or more environment variables (DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, DB_SSLMODE) are missing.")
+	}
+
 	var er error
-	db, er := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, er := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		PrepareStmt: false,
+	})
 	if er != nil {
 		log.Fatal("Failed to connect to database:", er)
 	}
 
-	DB = db
-	fmt.Println("connected to PostgreSQL ")
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Printf("Warning: Failed to get underlying sql.DB for pool settings: %v", err)
+	} else {
+		sqlDB.SetMaxIdleConns(5)
+		sqlDB.SetMaxOpenConns(20)
+		sqlDB.SetConnMaxLifetime(time.Hour)
+		fmt.Println("Database connection pool configured.")
+	}
 
-	DB.AutoMigrate(&models.User{}, &models.UserStats{}, &models.UserQuestionAttempt{}, &models.Question{}, &models.PasswordReset{})
+	DB = db
+	fmt.Println("Running database auto-migrations...")
+	err = DB.AutoMigrate(
+		&models.User{},
+		&models.UserStats{},
+		&models.UserQuestionAttempt{},
+		&models.Question{},
+		&models.Comprehension{},
+		&models.PasswordReset{},
+	)
+	if err != nil {
+		log.Printf("Warning: Failed during auto-migration: %v", err)
+	} else {
+		fmt.Println("Database auto-migrations completed successfully.")
+	}
 
 }
 
 func CreateUsers(username, email, password string) error {
+	if DB == nil {
+		return fmt.Errorf("database is not connected")
+	}
+
 	user := models.User{
 		Username: username,
 		Email:    email,
@@ -59,68 +89,71 @@ func CreateUsers(username, email, password string) error {
 }
 
 func QuestionFormHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid Request Method", http.StatusMethodNotAllowed)
-		return
-	}
-
-	err := r.ParseMultipartForm(10 << 20)
-	if err != nil {
-		http.Error(w, "Failed to parse form", http.StatusBadRequest)
+	if DB == nil {
+		http.Error(w, "Database is not connected", http.StatusInternalServerError)
 		return
 	}
 
 	var question models.Question
-	var attempt models.UserQuestionAttempt
 	question.Question = r.FormValue("question")
 	question.Difficulty = r.FormValue("difficulty")
 	question.Subject = r.FormValue("subject")
-
-	marks, err := strconv.ParseFloat(r.FormValue("marks"), 64)
-	if err != nil {
-		http.Error(w, "Invalid marks value", http.StatusBadRequest)
-		return
-	}
-	question.Marks = marks
-
-	negativeMarks, err := strconv.ParseFloat(r.FormValue("negativeMarks"), 64)
-	if err != nil {
-		http.Error(w, "Invalid negative marks value", http.StatusBadRequest)
-		return
-	}
-	question.NegativeMarks = negativeMarks
-
-	question.QuestionType = r.FormValue("questionType")
+	question.Topic = r.FormValue("topic")
+	// question.Marks = marks
+	// question.NegativeMarks = negativeMarks
+	// question.QuestionType = r.FormValue("questionType")
 	question.Explanation = r.FormValue("explanation")
-	attempt.Solved = r.FormValue("solved") == "true"
-
 	optionsJSON := r.FormValue("options")
 	correctAnswersJSON := r.FormValue("correctAnswers")
-
-	if !json.Valid([]byte(optionsJSON)) || !json.Valid([]byte(correctAnswersJSON)) {
-		http.Error(w, "Invalid JSON format for options or correctAnswers", http.StatusBadRequest)
+	if optionsJSON == "" || correctAnswersJSON == "" {
+		http.Error(w, "Missing options or correctAnswers", http.StatusBadRequest)
+		return
+	}
+	if !json.Valid([]byte(optionsJSON)) {
+		http.Error(w, "Invalid JSON format for options", http.StatusBadRequest)
+		return
+	}
+	if !json.Valid([]byte(correctAnswersJSON)) {
+		http.Error(w, "Invalid JSON format for correctAnswers", http.StatusBadRequest)
 		return
 	}
 
 	question.Options = []byte(optionsJSON)
 	question.CorrectAnswers = []byte(correctAnswersJSON)
 
-	file, meta, err := r.FormFile("image")
-	if err == nil {
-		defer file.Close()
-		imagePath := "uploads/" + meta.Filename
-		outFile, _ := os.Create(imagePath)
-		defer outFile.Close()
-		io.Copy(outFile, file)
-		question.ImagePath = &imagePath
+	supabaseImageName := r.FormValue("imageName")
+	question.ImagePath = nil
+
+	if supabaseImageName != "" {
+		projectRef := os.Getenv("SUPABASE_PROJECT_REF")
+		bucket := os.Getenv("SUPABASE_STORAGE_BUCKET")
+		if projectRef == "" || bucket == "" {
+			log.Println("bhai env load kar pehle")
+		} else {
+			publicURL := fmt.Sprintf("https://%s.supabase.co/storage/v1/object/public/%s/%s",
+				projectRef,
+				bucket,
+				supabaseImageName)
+
+			urlSlice := []string{publicURL}
+
+			imageBytes, err := json.Marshal(urlSlice)
+			if err != nil {
+				log.Printf("Error marshaling image path URL for question form: %v", err)
+				http.Error(w, "Failed to process image path", http.StatusInternalServerError)
+				return
+			}
+			question.ImagePath = imageBytes
+		}
 	}
 
 	result := DB.Create(&question)
 	if result.Error != nil {
+		log.Printf("Error creating question from form: %v", result.Error)
 		http.Error(w, "Failed to create the Question", http.StatusInternalServerError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, `{"message": "Question added successfully"}`)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 }
