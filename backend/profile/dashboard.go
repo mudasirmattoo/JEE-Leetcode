@@ -5,7 +5,6 @@ import (
 	"backend/models"
 	"encoding/json"
 	"net/http"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -54,26 +53,6 @@ func DashboardHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "appication/json")
 	json.NewEncoder(w).Encode(dashboardRespone)
-}
-
-func QuestionIsSolved(db *gorm.DB, questionID uint, userID uint) (bool, error) {
-	var question models.Question
-	var attempt models.UserQuestionAttempt
-
-	err := db.First(&question, "id = ? AND user_id = ?", questionID, userID).Error
-	if err != nil {
-		return false, err
-	}
-
-	attempt.Solved = true
-	attempt.SolvedAt = time.Now()
-
-	err = db.Save(&question).Error
-	if err != nil {
-		return false, err
-	}
-
-	return true, nil
 }
 
 func CalculateSolvedPerDay(db *gorm.DB, userID uint) (map[string]int, int, error) {
