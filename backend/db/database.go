@@ -57,7 +57,7 @@ func ConnectDB() {
 	err = DB.AutoMigrate(
 		&models.Profile{},
 		&models.UserStats{},
-		&models.UserQuestionAttempt{},
+		&models.QuestionAttempt{},
 		&models.Question{},
 		&models.Comprehension{},
 		&models.PasswordReset{},

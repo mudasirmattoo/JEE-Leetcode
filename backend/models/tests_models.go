@@ -30,3 +30,18 @@ type TestQuestions struct {
 	QuestionID uint     `gorm:"not null"`
 	gorm.Model
 }
+
+type UserTestAttempt struct {
+	ID                 uint              `gorm:"primaryKey;autoIncrement"`
+	UserID             uuid.UUID         `gorm:"not null;foreignKey:User;references:ID"`
+	User               Profile           `gorm:"constraint:OnDelete:CASCADE"`
+	TestID             uint              `gorm:"not null;foreignKey:Test;references:ID"`
+	Test               Test              `gorm:"constraint:OnDelete:CASCADE"`
+	StartTime          time.Time         `gorm:"default:NOW()"`
+	EndTime            *time.Time        `gorm:"type:timestamptz"`
+	Status             string            `gorm:"not null"`
+	TotalScoreAchieved *float64          `gorm:"type:float8"`
+	QuestionAttempt    []QuestionAttempt `gorm:"type:jsonb"`
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
+}

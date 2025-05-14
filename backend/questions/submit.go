@@ -64,7 +64,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	attempt := models.UserQuestionAttempt{
+	attempt := models.QuestionAttempt{
 		UserID:          userID_uuid,
 		QuestionID:      requestData.QuestionID,
 		SelectedOptions: selectedOptionsBytes,
