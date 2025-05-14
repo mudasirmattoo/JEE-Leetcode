@@ -26,13 +26,15 @@ type Question struct {
 	TestQuestions    []TestQuestions `gorm:"foreignKey:QuestionID"`
 }
 
-type UserQuestionAttempt struct {
+type QuestionAttempt struct {
 	ID              uint      `gorm:"primaryKey"`
 	User            Profile   `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 	UserID          uuid.UUID `gorm:"type:uuid;not null"`
-	QuestionID      uint
-	SelectedOptions []byte `gorm:"type:jsonb"`
+	QuestionAttempt Question  `gorm:"foreignKey:QuestionID;constraint:OnDelete:CASCADE"`
+	QuestionID      uint      `gorm:"not null"`
+	SelectedOptions []byte    `gorm:"type:jsonb"`
 	IsCorrect       bool
+	Score           float64 `json:"score"`
 	SolvedAt        time.Time
 	Solved          bool `gorm:"not null"`
 }
