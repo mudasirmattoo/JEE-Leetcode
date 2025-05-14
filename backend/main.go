@@ -143,23 +143,23 @@ func main() {
 
 	db.ConnectDB()
 
-	jsonFilePath := "./data/PYQ_Questions_final_mapped.json"
-	log.Printf("Attempting to seed data from %s", jsonFilePath)
+	// jsonFilePath := "./data/PYQ_Questions_final_mapped.json"
+	// log.Printf("Attempting to seed data from %s", jsonFilePath)
 
-	if _, err := os.Stat(jsonFilePath); err == nil {
-		err := db.InsertQuestionsFromJSON(jsonFilePath)
-		if err != nil {
-			log.Printf("Error seeding database from JSON: %v", err)
-		} else {
-			log.Println("Database seeding from JSON completed.")
-		}
-	} else if os.IsNotExist(err) {
-		log.Printf("JSON seed file not found at %s, skipping seeding.", jsonFilePath)
-	} else {
-		log.Printf("Error checking JSON seed file %s: %v", jsonFilePath, err)
-	}
+	// if _, err := os.Stat(jsonFilePath); err == nil {
+	// 	err := db.InsertQuestionsFromJSON(jsonFilePath)
+	// 	if err != nil {
+	// 		log.Printf("Error seeding database from JSON: %v", err)
+	// 	} else {
+	// 		log.Println("Database seeding from JSON completed.")
+	// 	}
+	// } else if os.IsNotExist(err) {
+	// 	log.Printf("JSON seed file not found at %s, skipping seeding.", jsonFilePath)
+	// } else {
+	// 	log.Printf("Error checking JSON seed file %s: %v", jsonFilePath, err)
+	// }
 
-	uploadInitialFiles()
+	// uploadInitialFiles()
 	router := mux.NewRouter()
 	routes.RegisterRoutes(router)
 

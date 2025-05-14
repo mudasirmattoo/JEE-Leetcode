@@ -26,7 +26,7 @@ func DashboardHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user models.User
+	var user models.Profile
 	var stats models.UserStats
 
 	username := r.URL.Query().Get("username")

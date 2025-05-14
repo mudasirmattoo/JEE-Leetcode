@@ -14,10 +14,10 @@ func CreateUsers(username, email, password string) error {
 		return fmt.Errorf("database is not connected")
 	}
 
-	user := models.User{
+	user := models.Profile{
 		Username: username,
 		Email:    email,
-		Password: password,
+		// Password: password,
 	}
 
 	result := DB.Create(&user)

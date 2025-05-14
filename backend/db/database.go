@@ -55,7 +55,7 @@ func ConnectDB() {
 	DB = db
 	fmt.Println("Running database auto-migrations...")
 	err = DB.AutoMigrate(
-		&models.User{},
+		&models.Profile{},
 		&models.UserStats{},
 		&models.UserQuestionAttempt{},
 		&models.Question{},
