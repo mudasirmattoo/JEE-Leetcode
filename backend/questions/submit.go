@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 func SubmitHandler(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +22,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var requestData struct {
-		UserID          uint     `json:"user_id"`
+		UserID          string   `json:"user_id"`
 		QuestionID      uint     `json:"question_id"`
 		SelectedOptions []string `json:"selected_options"`
 	}
@@ -31,8 +33,14 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	if requestData.UserID == 0 || requestData.QuestionID == 0 {
-		http.Error(w, "Missing user_id or question_id", http.StatusBadRequest)
+	userID_uuid, err := uuid.Parse(requestData.UserID)
+	if err != nil {
+		http.Error(w, "Invalid user_id format. Must be a valid UUID.", http.StatusBadRequest)
+		return
+	}
+
+	if requestData.QuestionID == 0 {
+		http.Error(w, "Missing question_id", http.StatusBadRequest)
 		return
 	}
 
@@ -57,7 +65,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	attempt := models.UserQuestionAttempt{
-		UserID:          requestData.UserID,
+		UserID:          userID_uuid,
 		QuestionID:      requestData.QuestionID,
 		SelectedOptions: selectedOptionsBytes,
 		IsCorrect:       isCorrect,
@@ -67,7 +75,7 @@ func SubmitHandler(w http.ResponseWriter, r *http.Request) {
 
 	result := db.DB.Create(&attempt)
 	if result.Error != nil {
-		log.Printf("Error saving user attempt for user %d, question %d: %v", requestData.UserID, requestData.QuestionID, result.Error)
+		log.Println("Error saving user attempt ")
 		http.Error(w, "Failed to save submission", http.StatusInternalServerError)
 		return
 	}

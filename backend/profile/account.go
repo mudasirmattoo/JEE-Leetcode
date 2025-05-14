@@ -21,7 +21,7 @@ func AccountHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user models.User
+	var user models.Profile
 	username := r.URL.Query().Get("username")
 	if username == "" {
 		http.Error(w, "Username required", http.StatusBadRequest)
